@@ -271,7 +271,9 @@ namespace creahtml
                 NumeroFattura = "verifica"+DateTime.Now.ToString("yyyyMMddhhmmss");
             }
             xmr.Close();
-            return NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim();
+            if (NomeFornitore.Length > 35)
+                NomeFornitore = NomeFornitore.Substring(1, 35);
+            return NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " ");
 #region annullata
             //    try
             //{
@@ -357,7 +359,7 @@ namespace creahtml
             success = bd.AppendEncodedSb(sb, "base64");
 
             // Save to a PDF file.
-            success = bd.WriteFile(Path.Combine(CartellaDestinazione,Path.GetFileNameWithoutExtension(filename)+ "_fattura.pdf"));
+            success = bd.WriteFile(Path.Combine(CartellaDestinazione,Path.GetFileNameWithoutExtension(filename)+ "_ALL.pdf"));
 
         }
     }

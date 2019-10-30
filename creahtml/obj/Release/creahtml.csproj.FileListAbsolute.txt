@@ -23,4 +23,3 @@ C:\TestEdicom\Csharp\creahtml\creahtml\bin\Release\creahtml.application
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.TrustInfo.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.exe.manifest
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.application
-C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.csprojAssemblyReference.cache
