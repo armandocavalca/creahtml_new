@@ -271,8 +271,8 @@ namespace creahtml
                 NumeroFattura = "verifica"+DateTime.Now.ToString("yyyyMMddhhmmss");
             }
             xmr.Close();
-            if (NomeFornitore.Length > 35)
-                NomeFornitore = NomeFornitore.Substring(1, 35);
+            //if (NomeFornitore.Length > 35)
+            //    NomeFornitore = NomeFornitore.Substring(1, 35);
             return NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " ");
 #region annullata
             //    try
