@@ -74,8 +74,11 @@ namespace creahtml
 
             string htmlFile = @"C:\TestEdicom\prova.HTML";
 
-            string _NomePdf = NomePDF(XmlDaImpotare);
-            _NomePdf = _NomePdf.Replace("/", "");
+            //string _NomePdf = NomePDF(XmlDaImpotare);
+            CartellaFile _cf = NomePDF(XmlDaImpotare);
+            string _NomePdf = _cf._file.Replace("/", "");
+            string _Cartella = _cf._cartella.Replace("/", "");
+            //_NomePdf = _NomePdf.Replace("/", "");
             if(_NomePdf.Contains("verifica"))
                 listBox1.Items.Add(_NomePdf + " xml origine --> " + Path.GetFileName(XmlDaImpotare));
             else
@@ -123,7 +126,8 @@ namespace creahtml
             byte[] pdfContent = pechkin.Convert(configuration);
 
             // Folder where the file will be created 
-            string directory = CartellaVisti +"\\"+ _NomePdf;
+            //string directory = CartellaVisti +"\\"+ _NomePdf;
+            string directory = CartellaVisti + "\\" + _Cartella;
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
             // Name of the PDF
@@ -188,7 +192,7 @@ namespace creahtml
 
             return false;
         }
-        public string NomePDF(string XmlDaImpotare)
+        public CartellaFile NomePDF(string XmlDaImpotare)
         {
             string _Nome = "";
             string _Cogonme = "";
@@ -270,11 +274,30 @@ namespace creahtml
             {
                 NumeroFattura = "verifica"+DateTime.Now.ToString("yyyyMMddhhmmss");
             }
+
+            xmr.ReadToFollowing("DatiPagamento");
+            xmr.MoveToAttribute("DettaglioPagamento");
+            xmr.ReadToFollowing("DataScadenzaPagamento");
+            string _datascadenza;
+            try
+            {
+                _datascadenza= xmr.ReadElementContentAsString();
+            }
+            catch
+            {
+                _datascadenza = "9999 - 99 - 99";
+            }
+
+
             xmr.Close();
-            //if (NomeFornitore.Length > 35)
-            //    NomeFornitore = NomeFornitore.Substring(1, 35);
-            return NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " ");
-#region annullata
+
+            CartellaFile _cf = new CartellaFile();
+            _cf._cartella = NomeFornitore.Trim().Replace("\"", " ") +" " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " "); 
+            _cf._file = _datascadenza + "_" + NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " ");
+
+            //return NomeFornitore.Trim().Replace("\"", " ") + " " + DataFattura.Trim() + " " + NumeroFattura.Trim().Replace("\\", " ");
+            return _cf;
+            #region annullata
             //    try
             //{
 
@@ -298,7 +321,7 @@ namespace creahtml
             //    _errore = true;
             //    return Path.GetFileNameWithoutExtension(XmlDaImpotare);
             //}
-#endregion
+            #endregion
         }
 
         private void Button2_Click_1(object sender, EventArgs e)
@@ -333,7 +356,7 @@ namespace creahtml
         {
             
         }
-        private void scarica_allegati(string NomeFile, string CartellaDestinazione, string filename)
+        private void scarica_allegati_old(string NomeFile, string CartellaDestinazione, string filename)
         {
             // The XML invoice is shown at the bottom of this example.
             Chilkat.Xml xml = new Chilkat.Xml();
@@ -345,22 +368,66 @@ namespace creahtml
                 return;
             }
 
-            // Get the Base64 PDF content.
-            Chilkat.StringBuilder sb = new Chilkat.StringBuilder();
-            success = xml.GetChildContentSb("FatturaElettronicaBody|Allegati|Attachment", sb);
-            if (success != true)
-            {
-                Debug.WriteLine(xml.LastErrorText);
-                return;
-            }
 
-            // Decode the base64
-            Chilkat.BinData bd = new Chilkat.BinData();
-            success = bd.AppendEncodedSb(sb, "base64");
+                // Get the Base64 PDF content.
+                Chilkat.StringBuilder sb = new Chilkat.StringBuilder();
 
-            // Save to a PDF file.
-            success = bd.WriteFile(Path.Combine(CartellaDestinazione,Path.GetFileNameWithoutExtension(filename)+ "_ALL.pdf"));
+                success = xml.GetChildContentSb("FatturaElettronicaBody|Allegati|Attachment", sb);
+                if (success != true)
+                {
+                    Debug.WriteLine(xml.LastErrorText);
+                    return;
+                }
+
+                // Decode the base64
+                Chilkat.BinData bd = new Chilkat.BinData();
+                success = bd.AppendEncodedSb(sb, "base64");
+
+                // Save to a PDF file.
+                success = bd.WriteFile(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL0.pdf"));
 
         }
+        private void scarica_allegati(string NomeFile, string CartellaDestinazione, string filename)
+        {
+            var xmr = new XmlTextReader(NomeFile);
+
+            // prova creazione pdf
+            for (int i = 0; i <= 99; i++)
+            {
+                xmr.ReadToFollowing("Allegati");
+                xmr.MoveToAttribute("FormatoAttachment");
+                xmr.ReadToFollowing("FormatoAttachment");
+                try
+                {
+                    if (xmr.ReadElementContentAsString().ToUpper() == "PDF")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".pdf"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                    }
+                }
+                catch
+                {
+                    xmr.Close();
+                    return;
+                }
+                
+            }
+            xmr.Close();
+        }
+
+        public struct CartellaFile
+        {
+            public string _cartella;
+            public string _file;
+        }
+
+
     }
 }

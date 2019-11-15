@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="creahtml.exe" size="174056">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="creahtml.exe" size="175080">
       <assemblyIdentity name="creahtml" version="2019.10.30.10" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>nzet/GYoEEssyAM2l9EYP82v5AHap6wQaIheMxTSFTQ=</dsig:DigestValue>
+        <dsig:DigestValue>HdNgyzbRoKAXGaxMdJIsVepfuiFxeRl4x3uIGFtnr0M=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
