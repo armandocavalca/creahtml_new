@@ -1,4 +1,6 @@
-﻿using Pechkin;
+﻿using iText.Kernel.Pdf;
+using iText.Kernel.Utils;
+using Pechkin;
 using Pechkin.Synchronized;
 using System;
 using System.Configuration;
@@ -156,7 +158,8 @@ namespace creahtml
             }
             try
             {
-                File.Copy("C:\\TestEdicom" + "\\DATI PER REGISTRAZIONE.xlsx", directory + "\\DATI PER REGISTRAZIONE.xlsx");
+                // sostituito da appendice in pdf
+                //File.Copy("C:\\TestEdicom" + "\\DATI PER REGISTRAZIONE.xlsx", directory + "\\DATI PER REGISTRAZIONE.xlsx");
             }
             catch(Exception e)
             {
@@ -168,7 +171,36 @@ namespace creahtml
 #endif
             }
 
-            
+            #region ITEXT7
+            try
+            {
+                PdfDocument pdf = new PdfDocument(new PdfWriter(directory + "\\pdf.pdf"));
+                PdfMerger merger = new PdfMerger(pdf);
+
+                //Add pages from the first document
+                PdfDocument firstSourcePdf = new PdfDocument(new PdfReader(directory + "\\" + filename));
+                merger.Merge(firstSourcePdf, 1, firstSourcePdf.GetNumberOfPages());
+
+                //Add pages from the second pdf document
+                PdfDocument secondSourcePdf = new PdfDocument(new PdfReader("C:\\TestEdicom\\foglio2.pdf"));
+                merger.Merge(secondSourcePdf, 1, secondSourcePdf.GetNumberOfPages());
+
+                firstSourcePdf.Close();
+                secondSourcePdf.Close();
+                pdf.Close();
+
+                // cancello file origina e rinomino il nuovo
+                File.Delete(directory + "\\" + filename);
+                File.Copy(directory + "\\pdf.pdf", directory + "\\" + filename);
+                File.Delete(directory + "\\pdf.pdf");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            #endregion
+
+
         }
 
         public bool ByteArrayToFile(string _FileName, byte[] _ByteArray)
