@@ -23,7 +23,6 @@ C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\creahtml.application
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.TrustInfo.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.exe.manifest
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.application
-C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.csprojAssemblyReference.cache
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\BouncyCastle.Crypto.dll
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\Common.Logging.Core.dll
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.barcodes.dll
@@ -49,3 +48,4 @@ C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.pdfa.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.sign.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.styledxmlparser.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.svg.xml
+C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.csprojAssemblyReference.cache

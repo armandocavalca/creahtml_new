@@ -78,10 +78,11 @@ namespace creahtml
 
             //string _NomePdf = NomePDF(XmlDaImpotare);
             CartellaFile _cf = NomePDF(XmlDaImpotare);
-            string _NomePdf = _cf._file.Replace("/", "");
-            string _Cartella = _cf._cartella.Replace("/", "");
+            string _NomePdf = _cf._file.Replace("/", "").Replace("-Società del gruppo Grimaldi Group S.p.A.  Palermo", "");
+            //string _Cartella = _cf._cartella.Replace("/", "");
+            string _Cartella = _cf._file.Replace("/", "").Replace("-Società del gruppo Grimaldi Group S.p.A.  Palermo", "");
             //_NomePdf = _NomePdf.Replace("/", "");
-            if(_NomePdf.Contains("verifica"))
+            if (_NomePdf.Contains("verifica"))
                 listBox1.Items.Add(_NomePdf + " xml origine --> " + Path.GetFileName(XmlDaImpotare));
             else
                 listBox1.Items.Add(_NomePdf );
