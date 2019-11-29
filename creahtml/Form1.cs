@@ -420,8 +420,11 @@ namespace creahtml
                 success = bd.WriteFile(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL0.pdf"));
 
         }
+       
+        
         private void scarica_allegati(string NomeFile, string CartellaDestinazione, string filename)
         {
+            bool _LetturaOk = false;
             var xmr = new XmlTextReader(NomeFile);
 
             // prova creazione pdf
@@ -432,10 +435,70 @@ namespace creahtml
                 xmr.ReadToFollowing("FormatoAttachment");
                 try
                 {
-                    if (xmr.ReadElementContentAsString().ToUpper() == "PDF")
+                    string _ext = xmr.ReadElementContentAsString().ToUpper();
+                    if (_ext == "PDF")
                     {
+
                         xmr.MoveToAttribute("Attachment");
                         xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    //else
+                    //{
+                    //    listBox1.Items.Add("formato allegato per il momento non gestito");
+                    //    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    //}
+                    if (_ext == "TXT")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+                        //MessageBox.Show(text);
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), text);
+
+                        //System.IO.FileStream stream =
+                        //new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        //System.IO.BinaryWriter writer =
+                        //    new BinaryWriter(stream);
+                        //writer.Write(file, 0, file.Length);
+                        //writer.Close();
+                        _LetturaOk = true;
+                    }
+                }
+                catch
+                {
+                    //xmr.Close();
+                    //return;
+                }
+                
+            }
+            xmr.Close();
+
+            // tento di leggere allegati con struttura diversa
+            xmr = new XmlTextReader(NomeFile);
+
+            // prova creazione pdf
+            for (int i = 0; i <= 99; i++)
+            {
+                xmr.ReadToFollowing("Allegati");
+                xmr.MoveToAttribute("NomeAttachment");
+                xmr.ReadToFollowing("NomeAttachment");
+                try
+                {
+                    string _ele = xmr.ReadElementContentAsString();
+                    if (_ele.Substring(_ele.Length-3,3).ToUpper() == "PDF")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
                         byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
                         System.IO.FileStream stream =
                         new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".pdf"), FileMode.CreateNew);
@@ -443,16 +506,18 @@ namespace creahtml
                             new BinaryWriter(stream);
                         writer.Write(file, 0, file.Length);
                         writer.Close();
+                        _LetturaOk = true;
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
-                    xmr.Close();
-                    return;
+                    //xmr.Close();
+                    //return;
                 }
-                
+
             }
             xmr.Close();
+
         }
 
         public struct CartellaFile

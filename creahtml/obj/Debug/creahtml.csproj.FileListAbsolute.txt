@@ -48,3 +48,4 @@ C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.pdfa.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.sign.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.styledxmlparser.xml
 C:\TestEdicom\Csharp\creahtml\creahtml\bin\Debug\itext.svg.xml
+C:\TestEdicom\Csharp\creahtml\creahtml\obj\Debug\creahtml.csprojAssemblyReference.cache
