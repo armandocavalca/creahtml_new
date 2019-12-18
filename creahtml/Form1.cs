@@ -436,7 +436,7 @@ namespace creahtml
                 try
                 {
                     string _ext = xmr.ReadElementContentAsString().ToUpper();
-                    if (_ext == "PDF")
+                    if (_ext.Contains( "PDF"))
                     {
 
                         xmr.MoveToAttribute("Attachment");
@@ -455,7 +455,7 @@ namespace creahtml
                     //    listBox1.Items.Add("formato allegato per il momento non gestito");
                     //    listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     //}
-                    if (_ext == "TXT")
+                    if (_ext.Contains("TXT"))
                     {
                         //xmr.MoveToAttribute("Attachment");
                         //xmr.ReadToFollowing("Attachment");
@@ -473,9 +473,12 @@ namespace creahtml
                         //writer.Close();
                         _LetturaOk = true;
                     }
+                    if (!_ext.Contains( "TXT") && !_ext.Contains("PDF"))
+                        MessageBox.Show("allegato con estensione " + _ext + " non ancora gestito per la fattura "+ CartellaDestinazione) ;
                 }
-                catch
+                catch(Exception ex)
                 {
+                    //MessageBox.Show(ex.Message);
                     //xmr.Close();
                     //return;
                 }
@@ -508,6 +511,17 @@ namespace creahtml
                         writer.Close();
                         _LetturaOk = true;
                     }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "TXT")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".txt" ), text);
+                        _LetturaOk = true;
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -517,6 +531,55 @@ namespace creahtml
 
             }
             xmr.Close();
+
+            if (_LetturaOk)
+                return;
+            // tento di leggere allegati con struttura diversa
+            xmr = new XmlTextReader(NomeFile);
+
+            // prova creazione pdf
+            for (int i = 0; i <= 99; i++)
+            {
+                xmr.ReadToFollowing("Allegati");
+                xmr.MoveToAttribute("NomeAttachment");
+                xmr.ReadToFollowing("NomeAttachment");
+                try
+                {
+                    string _ele = xmr.ReadElementContentAsString();
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "PDF")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".pdf"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "TXT")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+                        
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".txt" ), text);
+                        _LetturaOk = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //xmr.Close();
+                    //return;
+                }
+
+            }
+            xmr.Close();
+
 
         }
 
