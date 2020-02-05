@@ -22,6 +22,9 @@ namespace creahtml
 
         private void Button1_Click(object sender, EventArgs e)
         {
+
+            //
+
             var _elencoFile=Directory.GetFiles(@"c:\testedicom", "*.xml");
             foreach(var XmlDaImpotare in _elencoFile )
                 Elabora(XmlDaImpotare);
