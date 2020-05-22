@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -82,6 +84,12 @@ namespace creahtml
             //string _Cartella = _cf._cartella.Replace("/", "");
             string _Cartella = _cf._file.Replace("/", "").Replace("-Società del gruppo Grimaldi Group S.p.A.  Palermo", "");
             //_NomePdf = _NomePdf.Replace("/", "");
+
+            #region armando 22 05 2020 accorcio il nome del pdf se non sufficiente anche della cartella
+            if (_NomePdf.Length > 25)
+                _NomePdf = _NomePdf.Substring(0, 25);
+            #endregion
+
             if (_NomePdf.Contains("verifica"))
                 listBox1.Items.Add(_NomePdf + " xml origine --> " + Path.GetFileName(XmlDaImpotare));
             else
@@ -450,6 +458,48 @@ namespace creahtml
                         writer.Close();
                         _LetturaOk = true;
                     }
+                    if (_ext.Contains("ZIP"))
+                    {
+
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ext.Contains("XLS"))
+                    {
+
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ext.Contains("XLSX"))
+                    {
+
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
                     //else
                     //{
                     //    listBox1.Items.Add("formato allegato per il momento non gestito");
@@ -473,7 +523,34 @@ namespace creahtml
                         //writer.Close();
                         _LetturaOk = true;
                     }
-                    if (!_ext.Contains( "TXT") && !_ext.Contains("PDF"))
+                    if (_ext.Contains("CSV"))
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+                        //MessageBox.Show(text);
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), text);
+
+                        //System.IO.FileStream stream =
+                        //new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + _ext), FileMode.CreateNew);
+                        //System.IO.BinaryWriter writer =
+                        //    new BinaryWriter(stream);
+                        //writer.Write(file, 0, file.Length);
+                        //writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ext.Contains("URL"))
+                    {
+                        byte[] bytes = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        var text = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + "url"), text);
+
+                    }
+                    if (!_ext.Contains( "TXT") && !_ext.Contains("PDF") && 
+                        !_ext.Contains("CSV") && !_ext.Contains("ZIP") && !_ext.Contains("XLS")
+                        && !_ext.Contains("XLSX"))
                         MessageBox.Show("allegato con estensione " + _ext + " non ancora gestito per la fattura "+ CartellaDestinazione) ;
                 }
                 catch(Exception ex)
@@ -511,6 +588,46 @@ namespace creahtml
                         writer.Close();
                         _LetturaOk = true;
                     }
+
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "XLS")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".xls"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "XLSX")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".xlsx"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "ZIP")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".zip"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
                     if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "TXT")
                     {
                         //xmr.MoveToAttribute("Attachment");
@@ -521,6 +638,25 @@ namespace creahtml
 
                         System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".txt" ), text);
                         _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "CSV")
+                    {
+                        //xmr.MoveToAttribute("Attachment");
+                        //xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".csv"), text);
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "URL")
+                    {
+                        
+                        byte[] bytes = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        var text = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                    System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + "url"), text);
+                    _LetturaOk = true;
                     }
                 }
                 catch(Exception ex)
@@ -559,6 +695,45 @@ namespace creahtml
                         writer.Close();
                         _LetturaOk = true;
                     }
+                    if(_ele.Substring(_ele.Length - 3, 3).ToUpper() == "XLS")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".xls"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "XLSX")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".xlsx"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "ZIP")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                        System.IO.FileStream stream =
+                        new FileStream(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".zip"), FileMode.CreateNew);
+                        System.IO.BinaryWriter writer =
+                            new BinaryWriter(stream);
+                        writer.Write(file, 0, file.Length);
+                        writer.Close();
+                        _LetturaOk = true;
+                    }
                     if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "TXT")
                     {
                         xmr.MoveToAttribute("Attachment");
@@ -568,6 +743,31 @@ namespace creahtml
                         var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
                         
                         System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".txt" ), text);
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "CSV")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                        byte[] file = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+
+                        var text = System.Text.Encoding.UTF8.GetString(file, 0, file.Length);
+
+                        System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + ".csv"), text);
+                        _LetturaOk = true;
+                    }
+                    if (_ele.Substring(_ele.Length - 3, 3).ToUpper() == "URL")
+                    {
+                        xmr.MoveToAttribute("Attachment");
+                        xmr.ReadToFollowing("Attachment");
+                            
+                        byte[] bytes = System.Convert.FromBase64String((xmr.ReadElementContentAsString()));
+                            var text = System.Text.Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                            
+                            System.IO.File.WriteAllText(Path.Combine(CartellaDestinazione, Path.GetFileNameWithoutExtension(filename) + "_ALL" + i.ToString() + "." + "url"), text);
+
+
+                        
                         _LetturaOk = true;
                     }
                 }

@@ -48,4 +48,4 @@ C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.application
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.csproj.CopyComplete
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.exe
 C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.pdb
-C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.csprojAssemblyReference.cache
+C:\TestEdicom\Csharp\creahtml\creahtml\obj\Release\creahtml.csproj.CoreCompileInputs.cache

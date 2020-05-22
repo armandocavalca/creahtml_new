@@ -4,7 +4,7 @@
   <description asmv2:iconFile="fe.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="creahtml" version="2019.11.27.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="creahtml" version="2020.5.22.0" language="neutral" processorArchitecture="msil" />
     <commandLine file="creahtml.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -103,14 +103,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="creahtml.exe" size="177128">
-      <assemblyIdentity name="creahtml" version="2019.11.27.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="creahtml.exe" size="179688">
+      <assemblyIdentity name="creahtml" version="2020.5.22.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>2owG8xQwLOoSLMfqDt8hh8S2jMeSTPDtQSLnYHbwFLo=</dsig:DigestValue>
+        <dsig:DigestValue>VMhsTcpxkP8mk2FGE6R35Vr/tzNaTM07dQy9CDpcQgk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
